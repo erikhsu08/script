@@ -1,0 +1,30 @@
+local player = game.Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+
+-- Cria um escudo esférico
+local shield = Instance.new("Part")
+shield.Shape = Enum.PartType.Ball -- Define a forma como esfera
+shield.Size = Vector3.new(10, 10, 10) -- Ajuste o tamanho conforme necessário para envolver o personagem
+shield.CanCollide = true
+shield.Transparency = 0.5 -- Define a transparência para visualização
+shield.Anchored = true -- Anexa a esfera ao redor do jogador
+shield.Parent = character
+
+-- Atualiza a posição do escudo ao redor do personagem
+local function updateShieldPosition()
+    if character and character.PrimaryPart then
+        shield.Position = character.PrimaryPart.Position
+    end
+end
+
+-- Cria um loop para manter o escudo em volta do jogador
+game:GetService("RunService").RenderStepped:Connect(updateShieldPosition)
+
+-- Define o comportamento de repulsão ao ser tocado
+shield.Touched:Connect(function(hit)
+    local humanoid = hit.Parent:FindFirstChild("Humanoid")
+    if humanoid and hit.Parent ~= character then
+        local direction = (hit.Position - shield.Position).Unit
+        humanoid:ApplyImpulse(direction * -1000) -- Ajuste a força de empurrão
+    end
+end)
