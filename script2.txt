@@ -5,20 +5,17 @@ local character = player.Character or player.CharacterAdded:Wait()
 local shield = Instance.new("Part")
 shield.Shape = Enum.PartType.Ball -- Define a forma como esfera
 shield.Size = Vector3.new(10, 10, 10) -- Ajuste o tamanho conforme necessário para envolver o personagem
-shield.CanCollide = true
+shield.CanCollide = false -- Desativa a colisão geral para evitar problemas de movimento
 shield.Transparency = 0.5 -- Define a transparência para visualização
-shield.Anchored = true -- Anexa a esfera ao redor do jogador
+shield.Anchored = false -- Permite que o escudo se mova com o jogador
+shield.Massless = true -- Define o escudo como sem massa para não afetar o movimento
 shield.Parent = character
 
--- Atualiza a posição do escudo ao redor do personagem
-local function updateShieldPosition()
-    if character and character.PrimaryPart then
-        shield.Position = character.PrimaryPart.Position
-    end
-end
-
--- Cria um loop para manter o escudo em volta do jogador
-game:GetService("RunService").RenderStepped:Connect(updateShieldPosition)
+-- Usa um `Weld` para conectar o escudo ao personagem
+local weld = Instance.new("WeldConstraint")
+weld.Part0 = shield
+weld.Part1 = character.PrimaryPart -- Liga o escudo ao personagem
+weld.Parent = shield
 
 -- Define o comportamento de repulsão ao ser tocado
 shield.Touched:Connect(function(hit)
