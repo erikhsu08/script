@@ -1,0 +1,13 @@
+local player = game.Players.LocalPlayer
+local humanoid = player.Character:WaitForChild("Humanoid")
+
+function makeInvulnerable()
+    humanoid.Health = humanoid.MaxHealth
+    humanoid.Changed:Connect(function(property)
+        if property == "Health" then
+            humanoid.Health = humanoid.MaxHealth
+        end
+    end)
+end
+
+makeInvulnerable()
